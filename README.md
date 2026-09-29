@@ -22,7 +22,13 @@ cd go-from-scratch-project-244
 
 ## Использование
 
-<!-- Добавьте примеры запуска и запись asciinema — именно это смотрит работодатель -->
+```bash
+go run ./cmd/gendiff file1.json file2.json
+```
+
+Запись сравнения двух JSON-файлов:
+
+[![Пример работы gendiff](https://asciinema.org/a/pIKCYanzhh8F431w.svg)](https://asciinema.org/a/pIKCYanzhh8F431w)
 
 ---
 
