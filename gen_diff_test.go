@@ -10,7 +10,7 @@ import (
 )
 
 func fixture(name string) string {
-	return filepath.Join("testdata", name)
+	return filepath.Join("testdata", "fixture", name)
 }
 
 func TestGenDiff(t *testing.T) {

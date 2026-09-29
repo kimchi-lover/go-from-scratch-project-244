@@ -1,6 +1,7 @@
 # Вычислитель отличий на Go
 
 [![hexlet-check](https://github.com/kimchi-lover/go-from-scratch-project-244/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/kimchi-lover/go-from-scratch-project-244/actions)
+[![CI](https://github.com/kimchi-lover/go-from-scratch-project-244/actions/workflows/ci.yml/badge.svg)](https://github.com/kimchi-lover/go-from-scratch-project-244/actions/workflows/ci.yml)
 
 Консольная утилита для сравнения вложенных структур (JSON, YAML)
 
@@ -29,6 +30,14 @@ go run ./cmd/gendiff file1.json file2.json
 Запись сравнения двух JSON-файлов:
 
 [![Пример работы gendiff](https://asciinema.org/a/pIKCYanzhh8F431w.svg)](https://asciinema.org/a/pIKCYanzhh8F431w)
+
+## Разработка
+
+```bash
+make lint           # линтер golangci-lint
+make test           # тесты
+make test-coverage  # тесты с проверкой порога покрытия (COVERAGE_MIN в Makefile)
+```
 
 ---
 
