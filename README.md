@@ -23,8 +23,11 @@ cd go-from-scratch-project-244
 
 ## Использование
 
+Поддерживаемые форматы: JSON (`.json`) и YAML (`.yml`, `.yaml`). Формат определяется по расширению файла.
+
 ```bash
-go run ./cmd/gendiff file1.json file2.json
+go run ./cmd/gendiff testdata/fixture/file1.json testdata/fixture/file2.json
+go run ./cmd/gendiff testdata/fixture/file1.yml testdata/fixture/file2.yaml
 ```
 
 Запись сравнения двух JSON-файлов:

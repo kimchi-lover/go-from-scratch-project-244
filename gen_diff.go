@@ -1,18 +1,19 @@
 package code
 
 import (
+	"code/parsers"
 	"fmt"
 	"slices"
 	"strings"
 )
 
 func GenDiff(filepath1, filepath2, format string) (string, error) {
-	map1, err := parseFile(filepath1)
+	map1, err := parsers.ParseFile(filepath1)
 	if err != nil {
 		return "", err
 	}
 
-	map2, err := parseFile(filepath2)
+	map2, err := parsers.ParseFile(filepath2)
 	if err != nil {
 		return "", err
 	}

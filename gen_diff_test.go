@@ -73,6 +73,30 @@ func TestGenDiff(t *testing.T) {
 			file2:    "empty.json",
 			expected: "{\n}",
 		},
+		{
+			name:  "flat yaml with yml and yaml extensions",
+			file1: "file1.yml",
+			file2: "file2.yaml",
+			expected: `{
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
+}`,
+		},
+		{
+			name:  "same data in json and yaml",
+			file1: "file1.json",
+			file2: "file1.yml",
+			expected: `{
+    follow: false
+    host: hexlet.io
+    proxy: 123.234.53.22
+    timeout: 50
+}`,
+		},
 	}
 
 	for _, tt := range tests {
@@ -108,6 +132,12 @@ func TestGenDiffErrors(t *testing.T) {
 			file1:   "file1.json",
 			file2:   "invalid.json",
 			badFile: "invalid.json",
+		},
+		{
+			name:    "invalid yaml",
+			file1:   "file1.yml",
+			file2:   "invalid.yml",
+			badFile: "invalid.yml",
 		},
 	}
 
