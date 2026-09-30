@@ -55,10 +55,25 @@ func parseYAML(data []byte) (map[string]any, error) {
 	}
 
 	for key, value := range result {
-		if number, ok := value.(int); ok {
-			result[key] = float64(number)
-		}
+		result[key] = normalize(value)
 	}
 
 	return result, nil
+}
+
+func normalize(value any) any {
+	switch v := value.(type) {
+	case int:
+		return float64(v)
+	case map[string]any:
+		for key, item := range v {
+			v[key] = normalize(item)
+		}
+	case []any:
+		for i, item := range v {
+			v[i] = normalize(item)
+		}
+	}
+
+	return value
 }

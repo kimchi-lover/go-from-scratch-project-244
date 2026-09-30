@@ -2,7 +2,9 @@ package code_test
 
 import (
 	"code"
+	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,95 +15,80 @@ func fixture(name string) string {
 	return filepath.Join("testdata", "fixture", name)
 }
 
+func readFixture(t *testing.T, name string) string {
+	t.Helper()
+
+	data, err := os.ReadFile(fixture(name))
+	require.NoError(t, err)
+
+	return strings.TrimSuffix(string(data), "\n")
+}
+
 func TestGenDiff(t *testing.T) {
+	stylish := readFixture(t, "result_stylish.txt")
+	unchanged := readFixture(t, "result_stylish_unchanged.txt")
+
 	tests := []struct {
 		name     string
 		file1    string
 		file2    string
+		format   string
 		expected string
 	}{
 		{
-			name:  "flat json",
-			file1: "file1.json",
-			file2: "file2.json",
-			expected: `{
-  - follow: false
-    host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + timeout: 20
-  + verbose: true
-}`,
+			name:     "nested json",
+			file1:    "file1.json",
+			file2:    "file2.json",
+			format:   "stylish",
+			expected: stylish,
 		},
 		{
-			name:  "files in reverse order",
-			file1: "file2.json",
-			file2: "file1.json",
-			expected: `{
-  + follow: false
-    host: hexlet.io
-  + proxy: 123.234.53.22
-  - timeout: 20
-  + timeout: 50
-  - verbose: true
-}`,
+			name:     "nested yaml with yml and yaml extensions",
+			file1:    "file1.yml",
+			file2:    "file2.yaml",
+			format:   "stylish",
+			expected: stylish,
 		},
 		{
-			name:  "same data with different formatting and key order",
-			file1: "file1.json",
-			file2: "file1_reformatted.json",
-			expected: `{
-    follow: false
-    host: hexlet.io
-    proxy: 123.234.53.22
-    timeout: 50
-}`,
+			name:     "json and yaml",
+			file1:    "file1.json",
+			file2:    "file2.yaml",
+			format:   "stylish",
+			expected: stylish,
 		},
 		{
-			name:  "all keys added",
-			file1: "empty.json",
-			file2: "file2.json",
-			expected: `{
-  + host: hexlet.io
-  + timeout: 20
-  + verbose: true
-}`,
+			name:     "stylish is default format",
+			file1:    "file1.json",
+			file2:    "file2.json",
+			format:   "",
+			expected: stylish,
+		},
+		{
+			name:     "same data in json and yaml",
+			file1:    "file1.json",
+			file2:    "file1.yml",
+			format:   "stylish",
+			expected: unchanged,
+		},
+		{
+			name:     "same data with different formatting and key order",
+			file1:    "file1.json",
+			file2:    "file1_reformatted.json",
+			format:   "stylish",
+			expected: unchanged,
 		},
 		{
 			name:     "both files empty",
 			file1:    "empty.json",
 			file2:    "empty.json",
+			format:   "stylish",
 			expected: "{\n}",
-		},
-		{
-			name:  "flat yaml with yml and yaml extensions",
-			file1: "file1.yml",
-			file2: "file2.yaml",
-			expected: `{
-  - follow: false
-    host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + timeout: 20
-  + verbose: true
-}`,
-		},
-		{
-			name:  "same data in json and yaml",
-			file1: "file1.json",
-			file2: "file1.yml",
-			expected: `{
-    follow: false
-    host: hexlet.io
-    proxy: 123.234.53.22
-    timeout: 50
-}`,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := code.GenDiff(fixture(tt.file1), fixture(tt.file2), "stylish")
+			result, err := code.GenDiff(fixture(tt.file1), fixture(tt.file2), tt.format)
 			require.NoError(t, err)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -148,4 +135,10 @@ func TestGenDiffErrors(t *testing.T) {
 			assert.Empty(t, result)
 		})
 	}
+}
+
+func TestGenDiffUnknownOutputFormat(t *testing.T) {
+	result, err := code.GenDiff(fixture("file1.json"), fixture("file2.json"), "xml")
+	require.ErrorContains(t, err, `"xml"`)
+	assert.Empty(t, result)
 }

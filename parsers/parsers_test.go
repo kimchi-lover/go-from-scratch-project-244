@@ -14,15 +14,49 @@ func fixture(name string) string {
 
 func TestParseFile(t *testing.T) {
 	file1 := map[string]any{
-		"host":    "hexlet.io",
-		"timeout": 50.0,
-		"proxy":   "123.234.53.22",
-		"follow":  false,
+		"common": map[string]any{
+			"setting1": "Value 1",
+			"setting2": 200.0,
+			"setting3": true,
+			"setting6": map[string]any{
+				"key":  "value",
+				"doge": map[string]any{"wow": ""},
+			},
+		},
+		"group1": map[string]any{
+			"baz":  "bas",
+			"foo":  "bar",
+			"nest": map[string]any{"key": "value"},
+		},
+		"group2": map[string]any{
+			"abc":  12345.0,
+			"deep": map[string]any{"id": 45.0},
+		},
 	}
 	file2 := map[string]any{
-		"timeout": 20.0,
-		"verbose": true,
-		"host":    "hexlet.io",
+		"common": map[string]any{
+			"follow":   false,
+			"setting1": "Value 1",
+			"setting3": nil,
+			"setting4": "blah blah",
+			"setting5": map[string]any{"key5": "value5"},
+			"setting6": map[string]any{
+				"key":  "value",
+				"ops":  "vops",
+				"doge": map[string]any{"wow": "so much"},
+			},
+		},
+		"group1": map[string]any{
+			"foo":  "bar",
+			"baz":  "bars",
+			"nest": "str",
+		},
+		"group3": map[string]any{
+			"deep": map[string]any{
+				"id": map[string]any{"number": 45.0},
+			},
+			"fee": 100500.0,
+		},
 	}
 
 	tests := []struct {
@@ -31,6 +65,7 @@ func TestParseFile(t *testing.T) {
 	}{
 		{file: "file1.json", expected: file1},
 		{file: "file1.yml", expected: file1},
+		{file: "file2.json", expected: file2},
 		{file: "file2.yaml", expected: file2},
 	}
 
@@ -66,6 +101,12 @@ func TestParseYAMLEmpty(t *testing.T) {
 	result, err := parseYAML([]byte(""))
 	require.NoError(t, err)
 	assert.Empty(t, result)
+}
+
+func TestParseYAMLNumbersInLists(t *testing.T) {
+	result, err := parseYAML([]byte("ports: [80, 443]\n"))
+	require.NoError(t, err)
+	assert.Equal(t, map[string]any{"ports": []any{80.0, 443.0}}, result)
 }
 
 func TestParserErrors(t *testing.T) {

@@ -23,16 +23,19 @@ cd go-from-scratch-project-244
 
 ## Использование
 
-Поддерживаемые форматы: JSON (`.json`) и YAML (`.yml`, `.yaml`). Формат определяется по расширению файла.
+Поддерживаемые форматы: JSON (`.json`) и YAML (`.yml`, `.yaml`). Формат определяется по расширению файла, файлы могут быть в разных форматах. Сравниваются структуры любой вложенности.
 
 ```bash
-go run ./cmd/gendiff testdata/fixture/file1.json testdata/fixture/file2.json
-go run ./cmd/gendiff testdata/fixture/file1.yml testdata/fixture/file2.yaml
+make build
+./bin/gendiff testdata/fixture/file1.json testdata/fixture/file2.json
+./bin/gendiff --format stylish testdata/fixture/file1.yml testdata/fixture/file2.yaml
 ```
 
-Запись сравнения двух JSON-файлов:
+Флаг `--format` (`-f`) задаёт формат вывода. По умолчанию используется `stylish`: `+` — ключ добавлен, `-` — удалён, без знака — не изменился. Изменённое значение выводится двумя строками: старое с `-`, новое с `+`.
 
-[![Пример работы gendiff](https://asciinema.org/a/pIKCYanzhh8F431w.svg)](https://asciinema.org/a/pIKCYanzhh8F431w)
+Запись сравнения вложенных структур:
+
+[![Пример работы gendiff](https://asciinema.org/a/G91DWL7bSUMHKV3Y.svg)](https://asciinema.org/a/G91DWL7bSUMHKV3Y)
 
 ## Разработка
 

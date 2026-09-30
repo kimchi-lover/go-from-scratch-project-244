@@ -2,6 +2,7 @@ package main
 
 import (
 	"code"
+	"code/formatters"
 	"context"
 	"errors"
 	"fmt"
@@ -19,7 +20,7 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "format",
-				Value:   "stylish",
+				Value:   formatters.DefaultFormat,
 				Usage:   "output format",
 				Aliases: []string{"f"},
 			},
@@ -35,7 +36,7 @@ func main() {
 				return errors.New("path2 is required")
 			}
 
-			result, err := code.GenDiff(filepath1, filepath2, "stylish")
+			result, err := code.GenDiff(filepath1, filepath2, cmd.String("format"))
 			if err != nil {
 				return err
 			}
