@@ -21,7 +21,7 @@ func main() {
 			&cli.StringFlag{
 				Name:    "format",
 				Value:   formatters.DefaultFormat,
-				Usage:   "output format",
+				Usage:   "output format: stylish, plain",
 				Aliases: []string{"f"},
 			},
 		},

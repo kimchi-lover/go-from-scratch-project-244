@@ -27,6 +27,7 @@ func readFixture(t *testing.T, name string) string {
 func TestGenDiff(t *testing.T) {
 	stylish := readFixture(t, "result_stylish.txt")
 	unchanged := readFixture(t, "result_stylish_unchanged.txt")
+	plain := readFixture(t, "result_plain.txt")
 
 	tests := []struct {
 		name     string
@@ -76,6 +77,27 @@ func TestGenDiff(t *testing.T) {
 			file2:    "file1_reformatted.json",
 			format:   "stylish",
 			expected: unchanged,
+		},
+		{
+			name:     "plain json",
+			file1:    "file1.json",
+			file2:    "file2.json",
+			format:   "plain",
+			expected: plain,
+		},
+		{
+			name:     "plain yaml",
+			file1:    "file1.yml",
+			file2:    "file2.yaml",
+			format:   "plain",
+			expected: plain,
+		},
+		{
+			name:     "plain without changes",
+			file1:    "file1.json",
+			file2:    "file1.yml",
+			format:   "plain",
+			expected: "",
 		},
 		{
 			name:     "both files empty",

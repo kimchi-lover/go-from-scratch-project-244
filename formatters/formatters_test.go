@@ -13,18 +13,20 @@ func TestFormat(t *testing.T) {
 	tree := []diff.Node{{Key: "key", Type: diff.Added, NewValue: "value"}}
 
 	tests := []struct {
-		name   string
-		format string
+		name     string
+		format   string
+		expected string
 	}{
-		{name: "stylish", format: "stylish"},
-		{name: "default format", format: ""},
+		{name: "stylish", format: "stylish", expected: "{\n  + key: value\n}"},
+		{name: "plain", format: "plain", expected: "Property 'key' was added with value: 'value'"},
+		{name: "default format", format: "", expected: "{\n  + key: value\n}"},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result, err := formatters.Format(tree, tt.format)
 			require.NoError(t, err)
-			assert.Equal(t, "{\n  + key: value\n}", result)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }

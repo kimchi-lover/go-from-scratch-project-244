@@ -31,11 +31,37 @@ make build
 ./bin/gendiff --format stylish testdata/fixture/file1.yml testdata/fixture/file2.yaml
 ```
 
-Флаг `--format` (`-f`) задаёт формат вывода. По умолчанию используется `stylish`: `+` — ключ добавлен, `-` — удалён, без знака — не изменился. Изменённое значение выводится двумя строками: старое с `-`, новое с `+`.
+Флаг `--format` (`-f`) задаёт формат вывода: `stylish` (по умолчанию) или `plain`.
 
-Запись сравнения вложенных структур:
+### stylish
 
-[![Пример работы gendiff](https://asciinema.org/a/G91DWL7bSUMHKV3Y.svg)](https://asciinema.org/a/G91DWL7bSUMHKV3Y)
+Дерево изменений: `+` — ключ добавлен, `-` — удалён, без знака — не изменился. Изменённое значение выводится двумя строками: старое с `-`, новое с `+`.
+
+[![Пример работы gendiff в формате stylish](https://asciinema.org/a/G91DWL7bSUMHKV3Y.svg)](https://asciinema.org/a/G91DWL7bSUMHKV3Y)
+
+### plain
+
+Список изменений в виде текста, по строке на каждое изменённое свойство. Для вложенных свойств выводится полный путь от корня, составные значения заменяются на `[complex value]`, строки выводятся в одинарных кавычках. Неизменившиеся свойства не выводятся.
+
+```bash
+./bin/gendiff --format plain testdata/fixture/file1.json testdata/fixture/file2.json
+```
+
+```
+Property 'common.follow' was added with value: false
+Property 'common.setting2' was removed
+Property 'common.setting3' was updated. From true to null
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.doge.wow' was updated. From '' to 'so much'
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was updated. From 'bas' to 'bars'
+Property 'group1.nest' was updated. From [complex value] to 'str'
+Property 'group2' was removed
+Property 'group3' was added with value: [complex value]
+```
+
+<!-- asciinema: plain -->
 
 ## Разработка
 
