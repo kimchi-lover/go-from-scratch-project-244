@@ -31,7 +31,7 @@ make build
 ./bin/gendiff --format stylish testdata/fixture/file1.yml testdata/fixture/file2.yaml
 ```
 
-Флаг `--format` (`-f`) задаёт формат вывода: `stylish` (по умолчанию) или `plain`.
+Флаг `--format` (`-f`) задаёт формат вывода: `stylish` (по умолчанию), `plain` или `json`.
 
 ### stylish
 
@@ -62,6 +62,57 @@ Property 'group3' was added with value: [complex value]
 ```
 
 <!-- asciinema: plain -->
+
+### json
+
+Дерево изменений в формате JSON — для обработки другими программами. Корень — массив узлов, отсортированных по ключу. У каждого узла есть поля `key`, `type`, `oldValue` и `newValue`, у вложенных — ещё `children`. Значимые поля определяются типом узла:
+
+| `type`      | Значимые поля          | Описание                                         |
+|-------------|------------------------|--------------------------------------------------|
+| `added`     | `newValue`             | ключ добавлен                                    |
+| `removed`   | `oldValue`             | ключ удалён                                      |
+| `unchanged` | `oldValue`, `newValue` | значение не изменилось                           |
+| `changed`   | `oldValue`, `newValue` | значение изменилось                              |
+| `nested`    | `children`             | оба значения — объекты, `children` — их сравнение |
+
+```bash
+./bin/gendiff --format json testdata/fixture/file1.json testdata/fixture/file2.json
+```
+
+Фрагмент вывода — узел `group1`:
+
+```json
+{
+  "key": "group1",
+  "type": "nested",
+  "oldValue": null,
+  "newValue": null,
+  "children": [
+    {
+      "key": "baz",
+      "type": "changed",
+      "oldValue": "bas",
+      "newValue": "bars"
+    },
+    {
+      "key": "foo",
+      "type": "unchanged",
+      "oldValue": "bar",
+      "newValue": "bar"
+    },
+    {
+      "key": "nest",
+      "type": "changed",
+      "oldValue": {
+        "key": "value"
+      },
+      "newValue": "str"
+    }
+  ]
+}
+```
+
+<!-- asciinema: json -->
 
 ## Разработка
 

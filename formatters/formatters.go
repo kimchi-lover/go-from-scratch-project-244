@@ -2,6 +2,7 @@ package formatters
 
 import (
 	"code/diff"
+	"code/formatters/json"
 	"code/formatters/plain"
 	"code/formatters/stylish"
 	"fmt"
@@ -9,11 +10,12 @@ import (
 
 const DefaultFormat = "stylish"
 
-type formatter func(tree []diff.Node) string
+type formatter func(tree []diff.Node) (string, error)
 
 var formattersByName = map[string]formatter{
-	"stylish": stylish.Format,
-	"plain":   plain.Format,
+	"stylish": withoutError(stylish.Format),
+	"plain":   withoutError(plain.Format),
+	"json":    json.Format,
 }
 
 func Format(tree []diff.Node, format string) (string, error) {
@@ -26,5 +28,11 @@ func Format(tree []diff.Node, format string) (string, error) {
 		return "", fmt.Errorf("unknown output format %q", format)
 	}
 
-	return formatTree(tree), nil
+	return formatTree(tree)
+}
+
+func withoutError(format func(tree []diff.Node) string) formatter {
+	return func(tree []diff.Node) (string, error) {
+		return format(tree), nil
+	}
 }

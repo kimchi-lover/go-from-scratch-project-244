@@ -3,6 +3,7 @@ package formatters_test
 import (
 	"code/diff"
 	"code/formatters"
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,6 +20,7 @@ func TestFormat(t *testing.T) {
 	}{
 		{name: "stylish", format: "stylish", expected: "{\n  + key: value\n}"},
 		{name: "plain", format: "plain", expected: "Property 'key' was added with value: 'value'"},
+		{name: "json", format: "json", expected: "[\n  {\n    \"key\": \"key\",\n    \"type\": \"added\",\n    \"oldValue\": null,\n    \"newValue\": \"value\"\n  }\n]"},
 		{name: "default format", format: "", expected: "{\n  + key: value\n}"},
 	}
 
@@ -29,6 +31,14 @@ func TestFormat(t *testing.T) {
 			assert.Equal(t, tt.expected, result)
 		})
 	}
+}
+
+func TestFormatError(t *testing.T) {
+	tree := []diff.Node{{Key: "nan", Type: diff.Added, NewValue: math.NaN()}}
+
+	result, err := formatters.Format(tree, "json")
+	require.Error(t, err)
+	assert.Empty(t, result)
 }
 
 func TestFormatUnknown(t *testing.T) {
