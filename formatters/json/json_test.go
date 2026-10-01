@@ -19,39 +19,41 @@ func TestFormat(t *testing.T) {
 		}},
 	}
 
-	expected := `[
-  {
-    "key": "number",
-    "type": "changed",
-    "oldValue": 1234567,
-    "newValue": 0.5
-  },
-  {
-    "key": "nested",
-    "type": "nested",
-    "oldValue": null,
-    "newValue": null,
-    "children": [
-      {
-        "key": "flag",
-        "type": "unchanged",
-        "oldValue": true,
-        "newValue": true
-      },
-      {
-        "key": "object",
-        "type": "removed",
-        "oldValue": {
-          "a": "",
-          "b": [
-            1
-          ]
+	expected := `{
+  "diff": [
+    {
+      "key": "number",
+      "type": "changed",
+      "oldValue": 1234567,
+      "newValue": 0.5
+    },
+    {
+      "key": "nested",
+      "type": "nested",
+      "oldValue": null,
+      "newValue": null,
+      "children": [
+        {
+          "key": "flag",
+          "type": "unchanged",
+          "oldValue": true,
+          "newValue": true
         },
-        "newValue": null
-      }
-    ]
-  }
-]`
+        {
+          "key": "object",
+          "type": "removed",
+          "oldValue": {
+            "a": "",
+            "b": [
+              1
+            ]
+          },
+          "newValue": null
+        }
+      ]
+    }
+  ]
+}`
 
 	result, err := json.Format(tree)
 	require.NoError(t, err)

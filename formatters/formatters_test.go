@@ -20,7 +20,7 @@ func TestFormat(t *testing.T) {
 	}{
 		{name: "stylish", format: "stylish", expected: "{\n  + key: value\n}"},
 		{name: "plain", format: "plain", expected: "Property 'key' was added with value: 'value'"},
-		{name: "json", format: "json", expected: "[\n  {\n    \"key\": \"key\",\n    \"type\": \"added\",\n    \"oldValue\": null,\n    \"newValue\": \"value\"\n  }\n]"},
+		{name: "json", format: "json", expected: "{\n  \"diff\": [\n    {\n      \"key\": \"key\",\n      \"type\": \"added\",\n      \"oldValue\": null,\n      \"newValue\": \"value\"\n    }\n  ]\n}"},
 		{name: "default format", format: "", expected: "{\n  + key: value\n}"},
 	}
 

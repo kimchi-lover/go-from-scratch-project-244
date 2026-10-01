@@ -2,6 +2,7 @@ package code_test
 
 import (
 	"code"
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,7 +29,7 @@ func TestGenDiff(t *testing.T) {
 	stylish := readFixture(t, "result_stylish.txt")
 	unchanged := readFixture(t, "result_stylish_unchanged.txt")
 	plain := readFixture(t, "result_plain.txt")
-	json := readFixture(t, "result_json.json")
+	jsonDiff := readFixture(t, "result_json.json")
 
 	tests := []struct {
 		name     string
@@ -105,21 +106,21 @@ func TestGenDiff(t *testing.T) {
 			file1:    "file1.json",
 			file2:    "file2.json",
 			format:   "json",
-			expected: json,
+			expected: jsonDiff,
 		},
 		{
 			name:     "json from yaml files",
 			file1:    "file1.yml",
 			file2:    "file2.yaml",
 			format:   "json",
-			expected: json,
+			expected: jsonDiff,
 		},
 		{
 			name:     "json for empty files",
 			file1:    "empty.json",
 			file2:    "empty.json",
 			format:   "json",
-			expected: "[]",
+			expected: "{\n  \"diff\": []\n}",
 		},
 		{
 			name:     "both files empty",
@@ -137,6 +138,15 @@ func TestGenDiff(t *testing.T) {
 			assert.Equal(t, tt.expected, result)
 		})
 	}
+}
+
+func TestGenDiffJSONIsObject(t *testing.T) {
+	result, err := code.GenDiff(fixture("file1.json"), fixture("file2.json"), "json")
+	require.NoError(t, err)
+
+	var parsed map[string]any
+	require.NoError(t, json.Unmarshal([]byte(result), &parsed))
+	assert.Contains(t, parsed, "diff")
 }
 
 func TestGenDiffErrors(t *testing.T) {
